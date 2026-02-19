@@ -87,7 +87,7 @@ const counterObs = new IntersectionObserver((entries) => {
 statNums.forEach(el => counterObs.observe(el));
 
 // ===========================
-// ACTIVE NAV HIGHLIGHT (scroll-based)
+// ACTIVE NAV HIGHLIGHT (scroll  based)
 // ===========================
 const sections = document.querySelectorAll('section[id]');
 const navItems = document.querySelectorAll('.nav-links a');
