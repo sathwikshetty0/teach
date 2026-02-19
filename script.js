@@ -85,7 +85,7 @@ const counterObs = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 
 statNums.forEach(el => counterObs.observe(el));
-
+//
 // ===========================
 // ACTIVE NAV HIGHLIGHT (scroll  based)
 // ===========================
@@ -152,3 +152,30 @@ document.querySelectorAll('img').forEach(img => {
     img.style.opacity = '1';
   }, 3000);
 });
+
+// ===========================
+// LOADING SCREEN REMOVAL
+// ===========================
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loaderScreen');
+  // Small delay for the bar animation to finish
+  setTimeout(() => {
+    loader.classList.add('hidden');
+    // Re-enable scroll if it was disabled
+    document.body.style.overflow = '';
+  }, 2000);
+});
+
+// Prevent scroll during loading
+document.body.style.overflow = 'hidden';
+
+// ===========================
+// SCROLL PROGRESS BAR
+// ===========================
+const progressBar = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  progressBar.style.width = scrolled + "%";
+}, { passive: true });
