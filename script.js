@@ -1,4 +1,9 @@
 // ===========================
+// MOBILE CHECK
+// ===========================
+const isMobile = () => window.innerWidth <= 768;
+
+// ===========================
 // NAVBAR SCROLL
 // ===========================
 const navbar = document.getElementById('navbar');
@@ -7,12 +12,13 @@ window.addEventListener('scroll', () => {
 });
 
 // ===========================
-// HAMBURGER MENU
+// HAMBURGER MENU (desktop only)
 // ===========================
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('navLinks');
 
 hamburger.addEventListener('click', () => {
+  if (isMobile()) return; // Bottom nav handles mobile
   const isOpen = navLinks.classList.toggle('open');
   const [s1, s2, s3] = hamburger.querySelectorAll('span');
   if (isOpen) {
@@ -27,8 +33,10 @@ hamburger.addEventListener('click', () => {
 
 navLinks.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => {
-    navLinks.classList.remove('open');
-    hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = '1'; });
+    if (!isMobile()) {
+      navLinks.classList.remove('open');
+      hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = '1'; });
+    }
   });
 });
 
