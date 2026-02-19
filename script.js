@@ -87,30 +87,50 @@ const counterObs = new IntersectionObserver((entries) => {
 statNums.forEach(el => counterObs.observe(el));
 
 // ===========================
-// ACTIVE NAV HIGHLIGHT
+// ACTIVE NAV HIGHLIGHT (scroll-based)
 // ===========================
 const sections = document.querySelectorAll('section[id]');
 const navItems = document.querySelectorAll('.nav-links a');
 
-const sectionObs = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      navItems.forEach(a => a.classList.remove('active'));
-      const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
-      if (active) active.classList.add('active');
+function updateActiveNav() {
+  const scrollY = window.scrollY;
+  const offset = isMobile() ? 200 : window.innerHeight * 0.35;
+  let currentId = '';
+
+  sections.forEach(section => {
+    const top = section.offsetTop - offset;
+    const bottom = top + section.offsetHeight;
+    if (scrollY >= top && scrollY < bottom) {
+      currentId = section.id;
     }
   });
-}, { threshold: 0.35, rootMargin: '-10% 0px -70% 0px' });
 
-sections.forEach(s => sectionObs.observe(s));
+  // Fallback: if near bottom of page, highlight last nav item
+  if (window.innerHeight + scrollY >= document.body.offsetHeight - 100) {
+    const lastSection = sections[sections.length - 1];
+    if (lastSection) currentId = lastSection.id;
+  }
+
+  navItems.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === `#${currentId}`) {
+      a.classList.add('active');
+    }
+  });
+}
+
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+updateActiveNav();
 
 // ===========================
 // IMAGE ENHANCEMENTS
 // ===========================
 document.querySelectorAll('img').forEach(img => {
-  // Simple fade-in for images
-  img.style.opacity = '0';
-  img.style.transition = 'opacity 0.8s ease';
+  // Only hide if not yet loaded
+  if (!img.complete) {
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.8s ease';
+  }
 
   img.addEventListener('load', () => {
     img.style.opacity = '1';
@@ -121,5 +141,14 @@ document.querySelectorAll('img').forEach(img => {
     img.style.minHeight = '240px';
     img.style.opacity = '1';
   });
-});
 
+  // If already loaded (cached), show immediately
+  if (img.complete && img.naturalWidth > 0) {
+    img.style.opacity = '1';
+  }
+
+  // Failsafe: ensure all images show after 3 seconds no matter what
+  setTimeout(() => {
+    img.style.opacity = '1';
+  }, 3000);
+});
