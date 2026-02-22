@@ -1,4 +1,31 @@
 // ===========================
+// THEME TOGGLE logic
+// ===========================
+const themeToggle = document.getElementById('themeToggle');
+const storageKey = 'pulseio-theme';
+
+// Apply system or stored preference
+const getPreferredTheme = () => {
+  const storedTheme = localStorage.getItem(storageKey);
+  if (storedTheme) return storedTheme;
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+};
+
+const setTheme = (theme) => {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(storageKey, theme);
+};
+
+// Initial setup
+setTheme(getPreferredTheme());
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  setTheme(nextTheme);
+});
+
+// ===========================
 // MOBILE CHECK
 // ===========================
 const isMobile = () => window.innerWidth <= 768;

@@ -38,9 +38,10 @@
 }
 
 .outline-btn {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--glass);
     color: var(--text-1);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border-subtle);
+
 }
 
 .outline-btn:hover {
@@ -85,18 +86,18 @@
         bottom: 0;
         padding: 0 !important;
         /* Glass mirror effect */
-        background: linear-gradient(180deg,
-                rgba(15, 15, 30, 0.65) 0%,
-                rgba(7, 7, 14, 0.85) 100%) !important;
-        backdrop-filter: blur(40px) saturate(200%) brightness(1.1) !important;
-        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1) !important;
+        background: var(--bg) !important;
+        backdrop-filter: blur(40px) saturate(200%) !important;
+        -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+
         /* Glowing top border */
         border-top: 1px solid rgba(99, 102, 241, 0.25) !important;
         border-bottom: none !important;
         box-shadow:
-            0 -6px 40px rgba(0, 0, 0, 0.45),
-            0 -1px 0 rgba(255, 255, 255, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+            0 -6px 40px var(--shadow-md),
+            0 -1px 0 var(--border-subtle),
+            inset 0 1px 0 var(--glass) !important;
+
         z-index: 9999;
         padding-bottom: env(safe-area-inset-bottom, 0px) !important;
         /* Shine reflection line at top */
@@ -129,11 +130,12 @@
         right: 0;
         height: 50%;
         background: linear-gradient(180deg,
-                rgba(255, 255, 255, 0.04) 0%,
+                var(--glass) 0%,
                 transparent 100%);
         pointer-events: none;
         z-index: 0;
     }
+
 
     .navbar.scrolled {
         padding: 0 !important;
@@ -257,11 +259,10 @@
 
     .hero-overlay {
         background: linear-gradient(180deg,
-                rgba(7, 7, 14, 0.3) 0%,
-                rgba(7, 7, 14, 0.55) 30%,
-                rgba(7, 7, 14, 0.88) 65%,
-                rgba(7, 7, 14, 0.98) 100%) !important;
+                transparent 0%,
+                var(--bg) 95%) !important;
     }
+
 
     .hero-content {
         text-align: left;
