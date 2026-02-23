@@ -178,6 +178,35 @@ if (hero3d) {
 }
 
 // ===========================
+// MENTOR CARD 3D TILT & GLOW
+// ===========================
+const mentorCards = document.querySelectorAll('.mentor-card-v2');
+mentorCards.forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Update CSS variables for the radial gradient background glow
+    card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+    card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+
+    // Dynamic 3D Tilt based on mouse position
+    if (window.innerWidth > 768) {
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (centerY - y) / 12; // Tilt intensity
+      const rotateY = (x - centerX) / 12;
+      card.style.transform = `translateY(-12px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+// ===========================
 // SECTION 3D SCROLL PERSPECTIVE & PARALLAX
 // ===========================
 const perspectiveSections = document.querySelectorAll('.perspective-container');

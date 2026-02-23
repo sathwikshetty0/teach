@@ -2392,16 +2392,37 @@ img {
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-2xl);
   overflow: hidden;
-  transition: var(--transition);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   display: flex;
   flex-direction: column;
   position: relative;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.mentor-card-v2::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(99, 102, 241, 0.15),
+      transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .mentor-card-v2:hover {
   border-color: var(--border);
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-5px);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    var(--shadow-glow);
+  transform: translateY(-10px) rotateX(4deg) rotateY(-2deg);
+}
+
+.mentor-card-v2:hover::before {
+  opacity: 1;
 }
 
 .mentor-lead {
@@ -2413,6 +2434,7 @@ img {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  transform-style: preserve-3d;
 }
 
 .mc-avatar {
@@ -2428,7 +2450,13 @@ img {
   color: #fff;
   flex-shrink: 0;
   box-shadow: var(--shadow-sm);
+  transform: translateZ(30px);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
 
+.mentor-card-v2:hover .mc-avatar {
+  transform: translateZ(60px) scale(1.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .mc-badge {
@@ -2449,6 +2477,7 @@ img {
   display: flex;
   flex-direction: column;
   flex: 1;
+  transform-style: preserve-3d;
 }
 
 .mc-name {
@@ -2459,6 +2488,13 @@ img {
   margin-bottom: 8px;
   letter-spacing: -0.01em;
   line-height: 1.25;
+  transform: translateZ(20px);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.mentor-card-v2:hover .mc-name {
+  transform: translateZ(40px);
+  color: var(--primary-light);
 }
 
 .mc-role {
@@ -2466,6 +2502,7 @@ img {
   color: var(--text-2);
   margin-bottom: 22px;
   line-height: 1.6;
+  transform: translateZ(15px);
 }
 
 .mc-tags {
@@ -2473,6 +2510,12 @@ img {
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 28px;
+  transform: translateZ(25px);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.mentor-card-v2:hover .mc-tags {
+  transform: translateZ(45px);
 }
 
 .mc-tag {
@@ -2499,6 +2542,12 @@ img {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: auto;
+  transform: translateZ(10px);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.mentor-card-v2:hover .mc-contacts {
+  transform: translateZ(30px);
 }
 
 /* FOOTER refinement */
