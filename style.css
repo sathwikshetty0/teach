@@ -62,6 +62,7 @@
   --mesh-c2: var(--accent);
   --mesh-c3: var(--primary);
   --mesh-c4: var(--accent-light);
+  --loader-backdrop-op: 0.08;
 }
 
 /* Light Theme Overrides */
@@ -103,6 +104,7 @@
   --mesh-c2: #f59e0b;
   --mesh-c3: #6366f1;
   --mesh-c4: #fbbf24;
+  --loader-backdrop-op: 0.04;
 }
 
 
@@ -138,8 +140,12 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 1s var(--ease), visibility 1s;
+  transition: opacity 1s var(--ease), visibility 1s, background-color 0.8s ease;
   overflow: hidden;
+}
+
+.loader-screen.reveal-web {
+  background-color: transparent !important;
 }
 
 .loader-screen.hidden {
@@ -189,23 +195,58 @@ html {
   border-radius: 50%;
   opacity: 0.3;
   filter: blur(1px);
+  transition: opacity 0.6s ease;
 }
 
-.loader-backdrop-text {
+.loader-screen.wipe .loader-particle,
+.loader-screen.wipe .loader-content,
+.loader-screen.wipe .loader-glow,
+.loader-screen.wipe .loader-backdrop-center,
+.loader-screen.wipe .loader-mesh {
+  opacity: 0 !important;
+  transition: opacity 0.6s ease;
+}
+
+.loader-backdrop-center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loader-backdrop-text {
   font-family: var(--font-head);
   font-size: 25vw;
   font-weight: 950;
   color: var(--text-1);
-  opacity: 0.03;
+  opacity: var(--loader-backdrop-op);
   letter-spacing: -0.05em;
-  pointer-events: none;
-  z-index: 0;
   user-select: none;
   filter: blur(1px);
+  animation: backdropPulse 8s infinite ease-in-out;
+  line-height: 1;
+  text-align: center;
+}
+
+@keyframes backdropPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: var(--loader-backdrop-op);
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: calc(var(--loader-backdrop-op) * 1.5);
+  }
 }
 
 .loader-glass-wrap {
@@ -356,7 +397,7 @@ html {
   width: 0%;
   height: 100%;
   background: linear-gradient(90deg, var(--primary), var(--accent));
-  animation: loadProgress 2s forwards cubic-bezier(0.65, 0, 0.35, 1);
+  transition: width 0.1s ease-out;
 }
 
 .loader-scanner {
@@ -447,7 +488,8 @@ html {
 
 .wave-path-1 {
   fill: var(--primary-dark);
-  opacity: 0.7;
+  opacity: 1;
+  /* Solid bottom layer */
   animation: swell 12s ease-in-out infinite;
 }
 
@@ -2364,16 +2406,6 @@ img {
 
 .mentor-lead {
   border-color: rgba(99, 102, 241, 0.25);
-}
-
-.mentor-lead::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
 }
 
 .mc-top {

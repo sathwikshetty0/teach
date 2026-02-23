@@ -240,7 +240,9 @@ const loader = document.getElementById('loaderScreen');
 const loaderGlow = document.querySelector('.loader-glow');
 const loaderStatus = document.getElementById('loaderStatus');
 const loaderPerc = document.getElementById('loaderPercentage');
+const loaderBar = document.querySelector('.loader-bar');
 const loaderContent = document.querySelector('.loader-content');
+const backdropCenter = document.querySelector('.loader-backdrop-center');
 const backdropText = document.querySelector('.loader-backdrop-text');
 const particlesContainer = document.getElementById('loaderParticles');
 
@@ -285,10 +287,10 @@ if (loader) {
       const rotY = (x - centerX) / 25;
       loaderContent.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
     }
-    if (backdropText) {
-      const moveX = (window.innerWidth / 2 - x) / 40;
-      const moveY = (window.innerHeight / 2 - y) / 40;
-      backdropText.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+    if (backdropCenter) {
+      const moveX = (window.innerWidth / 2 - x) / 30;
+      const moveY = (window.innerHeight / 2 - y) / 30;
+      backdropCenter.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
     }
   });
 }
@@ -297,39 +299,49 @@ if (loader) {
 let progress = 0;
 const messages = ["CALIBRATING...", "SYNCING DATA...", "RENDERER INIT...", "PULSE ACTIVE"];
 const progressInterval = setInterval(() => {
-  progress += Math.random() * 12;
+  progress += Math.random() * 5 + 3; // Approx 5% each step
   if (progress >= 100) {
     progress = 100;
     clearInterval(progressInterval);
     removeLoader();
   }
   if (loaderPerc) loaderPerc.textContent = Math.floor(progress);
+  if (loaderBar) loaderBar.style.width = `${progress}%`;
   if (loaderStatus) {
     const msgIdx = Math.min(Math.floor((progress / 100) * messages.length), messages.length - 1);
     loaderStatus.textContent = messages[msgIdx];
   }
-}, 180);
+}, 180); // 180ms * 20 steps = 3.6 seconds
 
 const removeLoader = () => {
   if (!loader || loader.classList.contains('hidden')) return;
+
+  // Directly trigger the wave wipe
+  loader.classList.add('wipe');
+
+  // Wait for wave to cover screen (approx 0.8s into 1.5s animation) 
+  // then reveal content underneath so waves "un-wipe" the actual web
   setTimeout(() => {
-    loader.classList.add('wipe');
-    setTimeout(() => {
-      loader.classList.add('hidden');
-      document.body.style.overflow = '';
-      scanReveals();
-      const heroReveal = document.querySelector('.hero-reveal');
-      if (heroReveal) heroReveal.classList.add('visible');
-      window.scrollBy(0, 1);
-      window.scrollBy(0, -1);
-      setTimeout(scanReveals, 500);
-    }, 2200);
-  }, 600);
+    loader.classList.add('reveal-web');
+  }, 400);
+
+  setTimeout(() => {
+    loader.classList.add('hidden');
+    document.body.style.overflow = '';
+    scanReveals();
+    const heroReveal = document.querySelector('.hero-reveal');
+    if (heroReveal) heroReveal.classList.add('visible');
+    window.scrollBy(0, 1);
+    window.scrollBy(0, -1);
+    setTimeout(scanReveals, 500);
+  }, 2200);
 };
 
 window.addEventListener('load', () => {
-  // If assets are ready early, we still wait for progress
+  if (progress < 80) progress = 80;
 });
+
+// Failsafe
 setTimeout(removeLoader, 8000);
 
 // Prevent scroll during loading
