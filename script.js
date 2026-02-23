@@ -68,19 +68,35 @@ navLinks.querySelectorAll('a').forEach(link => {
 });
 
 // ===========================
-// SCROLL REVEAL
+// SCROLL REVEAL (Standard & 3D)
 // ===========================
-const revealEls = document.querySelectorAll('.reveal');
+const allReveals = document.querySelectorAll('.reveal, .reveal-3d, .stagger-3d, .hero-reveal');
 const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
+  entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 70);
+      entry.target.classList.add('visible');
+      // If hero reveal, let it stay observed if we want repeat, but usually once is fine
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+}, { threshold: 0.001, rootMargin: '0px' });
 
-revealEls.forEach(el => revealObserver.observe(el));
+// Manual reveal trigger for elements already in view
+const scanReveals = () => {
+  allReveals.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('visible');
+    }
+  });
+};
+
+// Global Failsafe: If things are still not visible after 8 seconds, force them
+setTimeout(() => {
+  allReveals.forEach(el => el.classList.add('visible'));
+}, 8000);
+
+allReveals.forEach(el => revealObserver.observe(el));
 
 // ===========================
 // COUNTER ANIMATION
@@ -150,8 +166,45 @@ window.addEventListener('scroll', updateActiveNav, { passive: true });
 updateActiveNav();
 
 // ===========================
-// IMAGE ENHANCEMENTS
+// 3D ORB PARALLAX
 // ===========================
+const hero3d = document.querySelector('.hero-3d-wrap');
+if (hero3d) {
+  document.addEventListener('mousemove', (e) => {
+    const x = (window.innerWidth / 2 - e.pageX) / 30;
+    const y = (window.innerHeight / 2 - e.pageY) / 30;
+    hero3d.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+  });
+}
+
+// ===========================
+// SECTION 3D SCROLL PERSPECTIVE & PARALLAX
+// ===========================
+const perspectiveSections = document.querySelectorAll('.perspective-container');
+const heroImg = document.querySelector('.hero-bg-img');
+
+window.addEventListener('scroll', () => {
+  const vh = window.innerHeight;
+  const scrolled = window.scrollY;
+
+  // Hero Image Parallax
+  if (heroImg) {
+    heroImg.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 + scrolled * 0.0004})`;
+  }
+
+  perspectiveSections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    const center = rect.top + rect.height / 2;
+    const distanceToCenter = (vh / 2 - center) / vh;
+
+    // Smoothly tilt sections as they pass center screen
+    const rotation = distanceToCenter * 6; // Max tilt
+    const elements = section.querySelectorAll('.reveal-3d');
+    elements.forEach(el => {
+      el.style.transform = `rotateX(${rotation}deg) translateZ(${Math.abs(rotation) * 3}px)`;
+    });
+  });
+}, { passive: true });
 document.querySelectorAll('img').forEach(img => {
   // Only hide if not yet loaded
   if (!img.complete) {
@@ -181,17 +234,103 @@ document.querySelectorAll('img').forEach(img => {
 });
 
 // ===========================
-// LOADING SCREEN REMOVAL
+// LOADING SCREEN LOGIC
 // ===========================
-window.addEventListener('load', () => {
-  const loader = document.getElementById('loaderScreen');
-  // Small delay for the bar animation to finish
+const loader = document.getElementById('loaderScreen');
+const loaderGlow = document.querySelector('.loader-glow');
+const loaderStatus = document.getElementById('loaderStatus');
+const loaderPerc = document.getElementById('loaderPercentage');
+const loaderContent = document.querySelector('.loader-content');
+const backdropText = document.querySelector('.loader-backdrop-text');
+const particlesContainer = document.getElementById('loaderParticles');
+
+// 1. Particle Generation
+if (particlesContainer) {
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'loader-particle';
+    const size = Math.random() * 4 + 2;
+    p.style.width = `${size}px`;
+    p.style.height = `${size}px`;
+    p.style.left = `${Math.random() * 100}%`;
+    p.style.top = `${Math.random() * 100}%`;
+    p.style.opacity = Math.random() * 0.4;
+    p.animate([
+      { transform: 'translate(0, 0)' },
+      { transform: `translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px)` }
+    ], {
+      duration: 3000 + Math.random() * 3000,
+      iterations: Infinity,
+      direction: 'alternate',
+      easing: 'ease-in-out'
+    });
+    particlesContainer.appendChild(p);
+  }
+}
+
+// 2. Interactive Tilt & Parallax
+if (loader) {
+  loader.addEventListener('mousemove', (e) => {
+    if (loader.classList.contains('wipe')) return;
+    const x = e.clientX;
+    const y = e.clientY;
+    if (loaderGlow) {
+      loaderGlow.style.left = `${x}px`;
+      loaderGlow.style.top = `${y}px`;
+    }
+    if (loaderContent) {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const rotX = (centerY - y) / 25;
+      const rotY = (x - centerX) / 25;
+      loaderContent.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    }
+    if (backdropText) {
+      const moveX = (window.innerWidth / 2 - x) / 40;
+      const moveY = (window.innerHeight / 2 - y) / 40;
+      backdropText.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+    }
+  });
+}
+
+// 3. Coordinated Removal
+let progress = 0;
+const messages = ["CALIBRATING...", "SYNCING DATA...", "RENDERER INIT...", "PULSE ACTIVE"];
+const progressInterval = setInterval(() => {
+  progress += Math.random() * 12;
+  if (progress >= 100) {
+    progress = 100;
+    clearInterval(progressInterval);
+    removeLoader();
+  }
+  if (loaderPerc) loaderPerc.textContent = Math.floor(progress);
+  if (loaderStatus) {
+    const msgIdx = Math.min(Math.floor((progress / 100) * messages.length), messages.length - 1);
+    loaderStatus.textContent = messages[msgIdx];
+  }
+}, 180);
+
+const removeLoader = () => {
+  if (!loader || loader.classList.contains('hidden')) return;
   setTimeout(() => {
-    loader.classList.add('hidden');
-    // Re-enable scroll if it was disabled
-    document.body.style.overflow = '';
-  }, 2000);
+    loader.classList.add('wipe');
+    setTimeout(() => {
+      loader.classList.add('hidden');
+      document.body.style.overflow = '';
+      scanReveals();
+      const heroReveal = document.querySelector('.hero-reveal');
+      if (heroReveal) heroReveal.classList.add('visible');
+      window.scrollBy(0, 1);
+      window.scrollBy(0, -1);
+      setTimeout(scanReveals, 500);
+    }, 2200);
+  }, 600);
+};
+
+window.addEventListener('load', () => {
+  // If assets are ready early, we still wait for progress
 });
+setTimeout(removeLoader, 8000);
 
 // Prevent scroll during loading
 document.body.style.overflow = 'hidden';

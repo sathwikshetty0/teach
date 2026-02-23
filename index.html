@@ -23,15 +23,42 @@
 
     <!-- LOADING SCREEN -->
     <div class="loader-screen" id="loaderScreen">
-        <div class="loader-content">
-            <div class="loader-logo">
-                <div class="loader-mark">P</div>
-                <div class="loader-text">PulseIO</div>
+        <div class="loader-mesh"></div>
+        <div class="loader-particles" id="loaderParticles"></div>
+        <div class="loader-backdrop-text">PULSE</div>
+        <div class="loader-glow"></div>
+        <div class="loader-glass-wrap">
+            <div class="loader-content">
+                <div class="loader-logo">
+                    <div class="loader-mark">P</div>
+                    <div class="loader-text">
+                        <span>P</span><span>u</span><span>l</span><span>s</span><span>e</span><span>I</span><span>O</span>
+                    </div>
+                </div>
+                <div class="loader-bar-wrap">
+                    <div class="loader-bar"></div>
+                    <div class="loader-scanner"></div>
+                </div>
+                <div class="loader-perc-wrap">
+                    <span id="loaderPercentage">0</span>%
+                </div>
+                <div class="loader-tagline" id="loaderStatus">CALIBRATING SYSTEMS...</div>
             </div>
-            <div class="loader-bar-wrap">
-                <div class="loader-bar"></div>
-            </div>
-            <div class="loader-tagline">Innovate &bull; Elevate &bull; Excel</div>
+        </div>
+        <!-- Realistic SVG Wave Transition -->
+        <div class="wave-transition">
+            <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                <path class="wave-path wave-path-1"
+                    d="M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,197.3C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+                </path>
+                <path class="wave-path wave-path-2"
+                    d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,208C960,192,1056,160,1152,144C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+                </path>
+                <path class="wave-path wave-path-3"
+                    d="M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,106.7C672,117,768,139,864,149.3C960,160,1056,160,1152,154.7C1248,149,1344,139,1392,133.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+                </path>
+            </svg>
+            <div class="wave-fill"></div>
         </div>
     </div>
 
@@ -115,7 +142,8 @@
                 alt="Students learning in classroom" class="hero-bg-img" />
             <div class="hero-overlay"></div>
         </div>
-        <div class="hero-content">
+        <div class="hero-content hero-reveal">
+            <div class="hero-label">Leading the Future of Education</div>
             <h1 class="hero-title">
                 Innovation, Technology<br />
                 &amp; Communication<br />
@@ -125,6 +153,16 @@
                 Empowering High School Students with hands-on learning,<br class="br-hide" />
                 design thinking, and future-ready skills.
             </p>
+
+            <!-- 3D Tech Component -->
+            <div class="hero-3d-wrap">
+                <div class="tech-orb">
+                    <div class="orb-core"></div>
+                    <div class="orb-ring ring-1"></div>
+                    <div class="orb-ring ring-2"></div>
+                    <div class="orb-ring ring-3"></div>
+                </div>
+            </div>
             <div class="hero-meta">
                 <div class="hero-meta-item">
                     <span class="meta-label">Target</span>
@@ -182,10 +220,11 @@
     </section>
 
     <!-- BACKGROUND & NEED -->
-    <section class="section" id="overview">
+    <section class="section perspective-container" id="overview">
         <div class="container">
             <div class="two-col-layout">
-                <div class="col-text reveal">
+                <div class="col-text reveal-3d">
+
                     <div class="section-tag">Background &amp; Need</div>
                     <h2 class="section-title">Why This Program Matters</h2>
                     <p class="section-body">
@@ -198,8 +237,9 @@
                         designed to bridge that gap by introducing students to hands-on learning, problem-solving, and
                         confidence-building.
                     </p>
-                    <div class="gap-list">
-                        <div class="gap-item reveal">
+                    <div class="gap-list stagger-3d">
+                        <div class="gap-item">
+
                             <div class="gap-line"></div>
                             <div>
                                 <h4>Practical Technology</h4>
@@ -229,7 +269,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-image reveal">
+                <div class="col-image reveal-3d">
+
                     <div class="image-stack">
                         <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80&fit=crop"
                             alt="Students in classroom" class="img-main" />
@@ -244,27 +285,33 @@
     </section>
 
     <!-- OBJECTIVES -->
-    <section class="section section-dark" id="objectives">
+    <section class="section section-dark perspective-container" id="objectives">
+
         <div class="container">
-            <div class="section-header reveal">
+            <div class="section-header reveal-3d">
+
                 <div class="section-tag">Program Objectives</div>
                 <h2 class="section-title">What We Aim to Achieve</h2>
                 <p class="section-desc">A comprehensive set of goals designed to transform how students think, learn,
                     and communicate.</p>
             </div>
-            <div class="objectives-grid">
-                <div class="obj-card reveal">
+            <div class="objectives-grid stagger-3d">
+
+                <div class="obj-card">
+
                     <div class="obj-num">01</div>
                     <h4>Innovation &amp; Design Thinking</h4>
                     <p>Introduce students to structured innovation frameworks and creative problem-solving
                         methodologies.</p>
                 </div>
-                <div class="obj-card reveal">
+                <div class="obj-card">
+
                     <div class="obj-num">02</div>
                     <h4>Practical Electronics</h4>
                     <p>Provide basic electronics knowledge through live demonstrations and hands-on experiments.</p>
                 </div>
-                <div class="obj-card reveal">
+                <div class="obj-card">
+
                     <div class="obj-num">03</div>
                     <h4>Problem-Solving Mindset</h4>
                     <p>Encourage curiosity, analytical thinking, and a structured approach to real-world challenges.</p>
